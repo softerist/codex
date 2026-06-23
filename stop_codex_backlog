@@ -1,0 +1,16 @@
+@'
+import os, sqlite3
+
+path = os.path.expanduser(r'~/.codex/logs_2.sqlite')
+db = sqlite3.connect(path)
+db.execute("""
+CREATE TRIGGER IF NOT EXISTS block_log_inserts
+BEFORE INSERT ON logs
+BEGIN
+    SELECT RAISE(IGNORE);
+END;
+""")
+db.commit()
+db.close()
+print("Codex feedback-log blocking trigger installed.")
+'@ | python -
