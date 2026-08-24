@@ -10,12 +10,14 @@ load during ordinary implementation.
    baseline directly, plus risk-driven evidence.
 3. **Mixed Python and TypeScript with a partial native gate:** Read both
    baselines, run omitted checks, then run the safe native verdict once.
-4. **Native gate autofixes files:** Run a supported fix phase first when
-   available, inspect the diff, and rerun affected omitted checks.
+4. **Native gate autofixes files:** Use an equivalent check-only verdict
+   instead. If only the full-coverage workflow mutates, inspect its diff and
+   rerun affected omitted checks against the final tree.
 5. **Native gate installs tools:** Ask before invoking the installing phase;
    gate execution does not imply permission.
-6. **Security-sensitive change without a scanner:** Select the minimum
-   applicable fallback; if unavailable, report incomplete verification.
+6. **Security-sensitive change without a scanner:** A successful, adequate set
+   of applicable fallbacks satisfies the gate. If any required fallback is
+   unavailable, fails, or lacks coverage, report incomplete verification.
 7. **Review-only request with a mutating native gate:** Do not run it; use
    non-mutating checks or report the gap.
 8. **Mandatory checker is missing:** Use an existing repository entrypoint or

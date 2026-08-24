@@ -45,18 +45,23 @@ For every implementation request:
 1. During implementation, iterate with the narrowest relevant analyzer,
    focused test, or build slice. Do not repeatedly invoke the full native gate
    when a faster scoped check provides the needed feedback.
-2. If the native workflow has a repository-supported fix-only phase, run it
-   before omitted mandatory checks. Inspect the task-owned diff afterward.
+2. Run a repository-supported fix-only phase only when its task-owned
+   mutations are authorized and no equivalent non-mutating route can prepare
+   or validate the required final state. Run it before omitted mandatory
+   checks, then inspect the task-owned diff.
 3. Run every applicable mandatory check the native verdict omits. If there is
    no canonical gate, run the complete mandatory baseline directly.
-4. Prefer a check-only native mode for the expensive final integrated verdict,
-   and normally run it once after omitted checks are green.
-5. If the only native mode can mutate files, record the task-owned diff before
-   and after it and ensure unrelated files did not change. If it changes files,
-   rerun only omitted mandatory checks applicable to those files. Determine
-   whether the native gate validated the post-mutation tree; if not, rerun its
-   check-only verdict when one exists. If no post-mutation verdict is possible,
-   report verification as incomplete. Do not blindly repeat the full workflow.
+4. Use a check-only native mode when it provides equivalent integrated
+   coverage. Do not invoke the mutating workflow in that case. Normally run the
+   final native verdict once after omitted checks are green.
+5. If no non-mutating mode provides equivalent integrated coverage and the
+   required native workflow mutates files, record the task-owned diff before
+   and after it and ensure unrelated files did not change. Rerun only omitted
+   mandatory checks applicable to files it changed. Determine whether the
+   native gate validated the post-mutation tree; if not, run any available
+   non-mutating validation mode against the final tree. If no post-mutation
+   verdict is possible, report verification as incomplete. Do not blindly
+   repeat the full mutating workflow.
 6. If the native gate fails, use focused checks while fixing the cause. Re-run
    it only after a relevant code, test, configuration, or generated-artifact
    change makes a different verdict plausible. Never repeat an unchanged

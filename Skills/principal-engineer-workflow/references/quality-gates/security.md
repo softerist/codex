@@ -11,10 +11,14 @@ Run every applicable repository-configured scanner and native security check.
 Preserve configured severity thresholds, exclusions, and blocking behavior.
 
 If a security-sensitive change has no applicable configured scanner or native
-security check, security verification is incomplete; do not report the change
-as fully verified. Select the minimum technology-aware fallback below, use an
-already available project-local tool when possible, and ask before installing
-anything:
+security check, security verification starts incomplete. Select every fallback
+below that applies to the changed boundary. Use an already available
+project-local tool when possible, and ask before installing anything.
+
+The fallback satisfies this security gate only when every applicable fallback
+runs successfully and adequately covers the changed boundary. If a required
+fallback is unavailable, fails, or cannot provide that coverage, verification
+remains incomplete and the change must not be reported as fully verified.
 
 - Python: Bandit; add pip-audit or the repository dependency audit when Python
   dependencies or lockfiles changed.
@@ -29,7 +33,8 @@ anything:
   user authorizes it as the fallback.
 
 Do not substitute an unrelated scanner merely to produce a green result. A
-missing fallback tool is incomplete or blocked, not `N/A`.
+missing fallback tool is incomplete or blocked, not `N/A`. Report which
+fallbacks satisfied the gate and why they were applicable.
 
 Do not make a previously blocking security verdict advisory. Do not change a
 dependency or lockfile solely to silence an audit without validating compatibility
