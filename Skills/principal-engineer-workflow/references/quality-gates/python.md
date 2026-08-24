@@ -18,7 +18,8 @@ All of these checks are mandatory:
 7. Pyrefly.
 8. Prettier in check mode for the repository's supported non-Python files. It
    remains part of the Python-repository gate even though it must not parse
-   Python source.
+   Python source. Apply the `N/A` rule in `core.md`: it is `N/A` only when no
+   supported first-party files exist, and the completion report must say why.
 
 Also run Python byte compilation and Ruff formatting verification when the
 repository declares them. Use the configured project or backend root and the

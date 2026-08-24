@@ -1,4 +1,6 @@
 interface:
   display_name: "Principal Engineer"
-  short_description: "High-rigor execution, debugging, and review"
-  default_prompt: "Use $principal-engineer-workflow to diagnose, implement, or review this software task with rigor proportional to its risk and within my requested scope."
+  short_description: "Mandatory gates and high-rigor engineering"
+  default_prompt: "Use $principal-engineer-workflow to implement this change
+    with mandatory quality gates, or diagnose or review it with rigor
+    proportional to risk."

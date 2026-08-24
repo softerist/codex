@@ -9,8 +9,9 @@ Read this reference for every completed change affecting `.ps1`, `.psm1`, or
    every parse error.
 2. Run PSScriptAnalyzer using the repository's settings when present and fail on
    every configured error or warning.
-3. Run the relevant Pester suite when tests exist or the changed behavior can be
-   exercised safely.
+3. Run the relevant Pester suite when tests exist. Otherwise, perform a safe,
+   focused behavioral probe when practical. If no safe probe exists, report
+   the verification gap without executing an operational script.
 4. For modules, validate the module manifest, import the module, and smoke-test
    the affected exported commands or aliases when applicable.
 

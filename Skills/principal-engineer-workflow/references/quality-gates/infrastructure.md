@@ -8,8 +8,19 @@ workflows, database migrations, or service configuration.
 Apply each gate whose file type or operational boundary was affected:
 
 - Markdown: MarkdownLint and Prettier check.
-- JSON, YAML, TOML, CSS, and supported configuration: Prettier check plus the
+- JSON, YAML, TOML, and supported configuration: Prettier check plus the
   repository's parser or schema validation.
+- CSS: Prettier check, Stylelint when configured, and the production frontend
+  build when the stylesheet participates in one.
+- HTML: Prettier check plus the repository's HTML validator or production
+  build. Run HTMLHint when configured.
+- XML: a well-formedness parser plus schema or domain-native validation when
+  available. Validate service or virtualization XML without applying it live.
+- Windows batch (`.cmd` and `.bat`): use the repository test harness or a safe
+  no-op, help, or test entrypoint through `cmd /d /c`. `cmd.exe` parses while
+  executing, so there is no reliable parse-only guarantee. Never execute an
+  operational or destructive batch file merely to syntax-check it; report the
+  direct-verification gap when no safe path exists.
 - Dockerfiles: Hadolint and a Docker build for the affected image.
 - Docker Compose: configuration rendering or validation and the relevant smoke
   test when safe.

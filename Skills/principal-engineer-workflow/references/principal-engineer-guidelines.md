@@ -17,7 +17,8 @@ Treat work as non-trivial when one or more of these apply:
   fallbacks, or time.
 
 An isolated, reversible change with an obvious verification path usually needs
-only a lightweight inspection, implementation, and targeted check.
+only lightweight process around the mandatory applicable quality floor and a
+targeted behavioral check.
 
 ## Scope and Authorization
 
@@ -43,7 +44,8 @@ For non-trivial work, keep a concise plan that captures:
 - The intended outcome
 - The relevant behavior or state transition
 - The main risks and assumptions
-- The verification strategy
+- The verification strategy, including applicable mandatory technology gates
+  and any native-gate side effects or coverage gaps
 
 Ask a question when the answer changes public behavior, persistence,
 irreversible effects, security posture, integration boundaries, or what counts
@@ -94,6 +96,11 @@ when it improves the current change or materially reduces risk.
 
 Select checks that exercise the relevant behavior, not merely convenient
 tooling:
+
+The applicable mandatory technology baseline is the invariant minimum for
+every completed implementation. Risk controls the additional behavioral,
+integration, end-to-end, performance, and operational evidence beyond that
+floor; it does not make a mandatory baseline optional.
 
 1. Start with the reproduction or closest targeted test.
 2. Add type, lint, build, integration, or broader regression checks when they

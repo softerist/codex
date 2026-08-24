@@ -1,8 +1,9 @@
 # Mandatory Quality Gates
 
-Use this policy after completing a coherent development change. It defines the
-shared enforcement order and routes to only the baselines relevant to the
-technologies affected by the change.
+Use this policy while planning and verifying a development change. Map the
+gates before editing, then enforce them after a coherent change batch. The
+applicable technology baselines are the invariant minimum; risk determines
+additional evidence beyond that floor.
 
 ## Load Applicable Baselines
 
@@ -14,38 +15,81 @@ Always read this file, then read each reference whose scope was affected:
   TypeScript, frontend, Electron, or Node changes.
 - [Shell and Rust](./shell-rust.md) for shell scripts or Rust code.
 - [Infrastructure](./infrastructure.md) for markup, configuration, containers,
-  workflows, migrations, or service configuration.
+  Windows batch files, workflows, migrations, or service configuration.
 - [Security](./security.md) when the canonical gate includes security checks or
   the change affects a security-sensitive boundary described there.
 
 Read multiple references for cross-technology changes. Do not read unrelated
 technology references merely because they exist.
 
+The [behavior scenarios](./scenarios.md) are maintenance acceptance criteria
+for this skill. Read them when reviewing or changing the quality-gate policy,
+not during ordinary implementation work.
+
+## Plan Before Editing
+
+For every implementation request:
+
+1. Detect affected technologies from the expected files, manifests,
+   configuration, and documented development commands.
+2. Inspect the canonical repository gate. Map which mandatory checks it covers
+   and whether it can autofix, generate files, install or upgrade tools, modify
+   dependencies or lockfiles, access the network, migrate data, deploy, restart
+   services, or cause other material effects.
+3. Select focused iteration checks, omitted mandatory checks, and the final
+   native-gate mode. Resolve missing tools or authorization gaps before relying
+   on the planned verdict.
+
 ## Enforcement Order
 
-1. Detect every affected technology from the edited files and the repository's
-   manifests, configuration, and documented development commands.
-2. Inspect the repository's canonical quality-gate command before running it and
-   map its coverage against every applicable mandatory baseline.
-3. Run every applicable mandatory check that the canonical gate omits. If the
-   repository has no canonical gate, run the complete mandatory baseline directly.
-4. After the omitted mandatory checks are green, run the repository-native
-   quality gate as the expensive final integrated verdict. Normally run it once.
-5. During implementation, iterate with the narrowest relevant analyzer, focused
-   test, or build slice. Do not repeatedly invoke the full native gate for
-   feedback that a faster scoped check can provide.
-6. If the native gate fails, use focused checks while fixing the cause. Re-run the
-   native gate only after a relevant code, test, configuration, or generated
-   artifact change makes a different verdict plausible. Never repeat an unchanged
+1. During implementation, iterate with the narrowest relevant analyzer,
+   focused test, or build slice. Do not repeatedly invoke the full native gate
+   when a faster scoped check provides the needed feedback.
+2. If the native workflow has a repository-supported fix-only phase, run it
+   before omitted mandatory checks. Inspect the task-owned diff afterward.
+3. Run every applicable mandatory check the native verdict omits. If there is
+   no canonical gate, run the complete mandatory baseline directly.
+4. Prefer a check-only native mode for the expensive final integrated verdict,
+   and normally run it once after omitted checks are green.
+5. If the only native mode can mutate files, record the task-owned diff before
+   and after it and ensure unrelated files did not change. If it changes files,
+   rerun only omitted mandatory checks applicable to those files. Determine
+   whether the native gate validated the post-mutation tree; if not, rerun its
+   check-only verdict when one exists. If no post-mutation verdict is possible,
+   report verification as incomplete. Do not blindly repeat the full workflow.
+6. If the native gate fails, use focused checks while fixing the cause. Re-run
+   it only after a relevant code, test, configuration, or generated-artifact
+   change makes a different verdict plausible. Never repeat an unchanged
    expensive gate merely to see whether it passes this time.
-7. Run focused behavioral tests earlier when they shorten the feedback loop, but
-   still complete this ordered gate sequence before declaring the work done.
+7. Run focused behavioral tests earlier when they shorten feedback, but finish
+   this sequence against the final tree before declaring the work done.
+
+## Side Effects and Authorization
+
+- Diagnose and Review modes are read-only. Do not run a native gate that
+  autofixes, generates tracked files, installs tools, changes dependencies, or
+  causes operational effects. Use check-only commands and disposable or
+  disabled caches where practical.
+- Implement mode does not authorize tool installation, upgrades, dependency or
+  lockfile changes, live service operations, migrations, or deployment. Ask
+  before invoking a gate known to perform any such action.
+- Running a familiar repository gate is not implicit permission for its hidden
+  installer or operational phases. Inspect it first and select a safe mode.
+- When no safe non-mutating verdict exists for Review or Diagnose, report the
+  verification gap instead of executing the gate.
 
 ## Verdict Integrity
 
 - A mandatory check is satisfied only when it runs successfully against the
   intended project root and relevant source set. An absent configuration, empty
   collection, or wrong environment is not success.
+- Mark a mandatory gate `N/A` only when its technology, target, or supported
+  first-party file set is genuinely absent. Record the exact reason. A missing
+  executable or configuration, empty test collection, or inconvenient
+  environment is incomplete or blocked, never `N/A`.
+- For example, Prettier is `N/A` in a Python repository only when no supported
+  first-party files exist. If supported files exist, it remains mandatory even
+  though it must not parse `.py` files.
 - Prefer project-local environments and pinned commands such as Poetry, a virtual
   environment, npm scripts, or Cargo.
 - Never install or upgrade tools, modify lockfiles, or make persistent environment

@@ -1,11 +1,12 @@
 ---
 name: principal-engineer-workflow
 description: >-
-  Use when a user explicitly wants principal-level engineering rigor, or when
-  software work has meaningful architectural, cross-file, operational, data,
-  security, or rollback risk. Covers evidence-led diagnosis, scoped
-  implementation, and severity-first review. Do not use for routine isolated
-  edits or ordinary technical questions.
+  Use for any request to implement, change, fix, refactor, or build software;
+  every completed implementation must finish with mandatory technology quality
+  gates. Also use for principal-level diagnosis, architecture, debugging, or
+  severity-first review. Scales extra verification and ceremony to risk while
+  preserving an invariant quality floor. Do not use for ordinary technical
+  questions or routine read-only explanations.
 ---
 
 # Principal Engineer Workflow
@@ -39,23 +40,27 @@ review-only request into permission to edit.
 4. Ask questions only when ambiguity materially changes behavior, risk, or
    irreversible effects.
 5. Re-plan when new evidence invalidates the current approach.
-6. Do not claim completion without verification proportional to the risk.
+6. Do not claim completion without the applicable mandatory quality floor and
+   additional verification proportional to the risk.
 
 ## Workflow
 
 1. **Triage:** Identify the operating mode, affected behavior, failure modes,
    and rollback cost.
 2. **Inspect:** Read the relevant repository instructions, code paths, tests,
-   configuration, and current state before proposing a significant change.
+   configuration, and current state before proposing a significant change. For
+   every implementation, read the [quality-gate policy][quality-gates] and the
+   affected technology references now. Map the mandatory checks, native-gate
+   coverage, side effects, missing tools, and final verification strategy.
 3. **Plan proportionally:** For non-trivial work, keep a short plan in the
    conversation. Use repository planning files only when they already exist or
    the user requests them.
 4. **Act within scope:** Diagnose, implement, or review according to the
    authorized mode.
-5. **Verify behavior:** Use the repository's declared tooling and the narrowest
-   meaningful checks first, broadening as risk warrants. After an
-   implementation, read and apply the mandatory technology baselines in the
-   [quality-gate policy][quality-gates].
+5. **Verify behavior:** After a coherent implementation batch, run every
+   applicable mandatory technology baseline. That baseline is an invariant
+   minimum. Scale additional behavioral, integration, end-to-end, performance,
+   and operational evidence to the actual risk.
 6. **Report the outcome:** State what changed or was found, what was verified,
    and any residual risk or untested area.
 
@@ -108,9 +113,13 @@ skill.
 For non-trivial diagnosis, implementation, or review, read the
 [detailed principal-engineer guidelines][guidelines].
 
-For every completed implementation, read the [quality-gate policy][quality-gates]
-and run the baselines for every technology affected by the change. Reviews and
-diagnosis remain read-only, but the same policy can guide non-mutating verification.
+For a routine implementation, use the lightweight path: this entrypoint plus
+the [quality-gate policy][quality-gates] and only the affected technology
+references. Load the detailed guidelines only for non-trivial work.
+
+For every completed implementation, run the mandatory baselines for every
+technology affected by the change. Reviews and diagnosis remain read-only, but
+the same policy can guide non-mutating verification when useful.
 
 [guidelines]: ./references/principal-engineer-guidelines.md
 [quality-gates]: ./references/quality-gates/core.md
